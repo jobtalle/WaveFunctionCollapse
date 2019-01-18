@@ -2,9 +2,16 @@ const TILE_IMAGE_WIDTH = 32;
 const TILE_IMAGE_HEIGHT = 32;
 const TILE_HEIGHT = 18;
 
-const tileset = new TileSet(
-    TILE_IMAGE_WIDTH,
-    TILE_IMAGE_HEIGHT,
-    TILE_HEIGHT,
-    document.getElementById("tiles"));
-const grid = new Grid(4, 4);
+const dimensions = new Dimensions(
+    64,
+    64,
+    34);
+const tileSet = new TileSet(
+    document.getElementById("tiles"),
+    dimensions);
+const grid = new Grid(
+    document.getElementById("grid"),
+    tileSet,
+    dimensions);
+
+tileSet.makeLegend(document.getElementById("legend"));

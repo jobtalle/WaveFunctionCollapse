@@ -8,11 +8,21 @@ Color.prototype.equals = function(other) {
     return this.r == other.r && this.g == other.g && this.b == other.b;
 };
 
-const Tile = function(x, y, width, height) {
+const Tile = function(x, y, width, height, matches) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.matches = matches;
+};
 
+Tile.prototype.setFrame = function(element, dimensions) {
+    element.style.backgroundPosition = "-" + this.x + "px -" + (this.y + dimensions.outerHeight / 2) + "px";
 };
 
 const TileImage = function(x, y, width, height, tileHeight, context) {
+    this.x = x;
+    this.y = y;
     this.northwest = [];
     this.northwestMatches = [];
     this.north = [];
@@ -57,8 +67,9 @@ const TileImage = function(x, y, width, height, tileHeight, context) {
     }
 };
 
-const TileSet = function(imageWidth, imageHeight, tileHeight, image) {
+const TileSet = function(image, dimensions) {
     let tiles = [];
+    let selectedTile = null;
     
     const enumerate = () => {
         const colorArrayMatch = (first, second, invert) => {
@@ -77,8 +88,8 @@ const TileSet = function(imageWidth, imageHeight, tileHeight, image) {
         canvas.height = image.height;
         context.drawImage(image, 0, 0, image.width, image.height);
 
-        for (let y = 0; y < image.height; y += imageHeight) for (let x = 0; x < image.width; x += imageWidth)
-            tileImages.push(new TileImage(x, y, imageWidth, imageHeight, tileHeight, context));
+        for (let y = 0; y < image.height; y += dimensions.imageHeight) for (let x = 0; x < image.width; x += dimensions.imageWidth)
+            tileImages.push(new TileImage(x, y, dimensions.imageWidth, dimensions.imageHeight, dimensions.tileHeight, context));
 
         for (let index = 0; index < tileImages.length; ++index) {
             for (let otherIndex = index + 1; otherIndex < tileImages.length; ++otherIndex) {
@@ -115,8 +126,54 @@ const TileSet = function(imageWidth, imageHeight, tileHeight, image) {
         }
 
         for (const tileImage of tileImages)
-            console.log(tileImage);
+            tiles.push(new Tile(tileImage.x, tileImage.y, dimensions.imageWidth, dimensions.imageHeight, [
+                tileImage.northMatches,
+                tileImage.northeastMatches,
+                tileImage.southeastMatches,
+                tileImage.southMatches,
+                tileImage.southwestMatches,
+                tileImage.northwestMatches
+            ]));
     };
+
+    this.makeLegend = element => {
+        let selected = null;
+
+        for (const tile of tiles) {
+            const entry = document.createElement("div");
+            const overlay = document.createElement("div");
+            
+            entry.className = "legend-entry";
+            entry.style.width = dimensions.tileWidth + "px";
+            entry.style.height = dimensions.tileHeight + "px";
+
+            tile.setFrame(entry, dimensions);
+
+            overlay.className = "overlay";
+            overlay.style.width = entry.style.width;
+            overlay.style.height = entry.style.height;
+            entry.appendChild(overlay);
+
+            element.appendChild(entry);
+
+            entry.onclick = () => {
+                selected.classList.remove("selected");
+                entry.classList.add("selected");
+
+                selected = entry;
+                selectedTile = tile;
+            }
+
+            if (!selected) {
+                selected = entry;
+                selectedTile = tile;
+                entry.classList.add("selected");
+            }
+        }
+    };
+
+    this.getTiles = () => tiles;
+    this.getSelected = () => selectedTile;
 
     enumerate();
 };
