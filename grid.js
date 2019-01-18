@@ -1,9 +1,13 @@
-const GridTile = function(x, y, dimensions) {
+const GridTile = function(x, y, dimensions, tiles) {
     this.x = x;
     this.y = y;
     this.width = dimensions.tileWidth;
     this.height = dimensions.tileHeight;
     this.element = null;
+    this.wave = [];
+
+    for (const tile of tiles)
+        this.wave.push(tile);
 };
 
 GridTile.prototype.getGridX = function() {
@@ -22,7 +26,10 @@ GridTile.prototype.createElement = function(grid) {
     element.style.height = this.height + "px";
     element.style.left = this.getGridX() + "px";
     element.style.top = this.getGridY() + "px";
-    element.onclick = () => grid.collapse(this.x, this.y);
+    element.onclick = () => {
+        if (element.classList.contains("unset"))
+            grid.set(this.x, this.y);
+    };
 
     this.element = element;
 
@@ -31,6 +38,7 @@ GridTile.prototype.createElement = function(grid) {
 
 GridTile.prototype.set = function(tile, dimensions) {
     this.element.classList.remove("unset");
+    this.wave = [tile];
     
     tile.setFrame(this.element, dimensions);
 };
@@ -40,15 +48,17 @@ const Grid = function(element, tileSet, dimensions) {
     const height = Math.floor((element.offsetHeight - dimensions.tileHeight / 2) / dimensions.tileHeight);
     const grid = [];
 
-    this.collapse = (x, y) => {
-        const tile = grid[x * height + y];
-        
-        tile.set(tileSet.getSelected(), dimensions);
+    const getTile = (x, y) => {
+        return grid[x * height + y];
+    };
+
+    this.set = (x, y) => {
+        getTile(x, y).set(tileSet.getSelected(), dimensions);
     };
 
     const initialize = () => {
         for (let x = 0; x < width; ++x) for (let y = 0; y < height; ++y) {
-            const tile = new GridTile(x, y, dimensions);
+            const tile = new GridTile(x, y, dimensions, tileSet.getTiles());
 
             grid.push(tile);
 

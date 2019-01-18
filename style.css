@@ -54,9 +54,14 @@
     background-image: url("select.png");
 }
 
-.legend-entry {
-    background-image: url("tiles.png");
+.legend-entry-wrapper {
     float: left;
+    padding: 2px;
+}
+
+.legend-entry {
+    display: inline-block;
+    background-image: url("tiles.png");
 }
 
 .legend-entry.selected .overlay {

@@ -88,8 +88,12 @@ const TileSet = function(image, dimensions) {
         canvas.height = image.height;
         context.drawImage(image, 0, 0, image.width, image.height);
 
-        for (let y = 0; y < image.height; y += dimensions.imageHeight) for (let x = 0; x < image.width; x += dimensions.imageWidth)
+        for (let y = 0; y < image.height; y += dimensions.imageHeight) for (let x = 0; x < image.width; x += dimensions.imageWidth) {
+            if (context.getImageData(x + dimensions.imageWidth / 2, y + dimensions.imageHeight / 2, 1, 1).data[3] === 0)
+                continue;
+
             tileImages.push(new TileImage(x, y, dimensions.imageWidth, dimensions.imageHeight, dimensions.tileHeight, context));
+        }
 
         for (let index = 0; index < tileImages.length; ++index) {
             for (let otherIndex = index + 1; otherIndex < tileImages.length; ++otherIndex) {
@@ -140,6 +144,7 @@ const TileSet = function(image, dimensions) {
         let selected = null;
 
         for (const tile of tiles) {
+            const wrapper = document.createElement("div");
             const entry = document.createElement("div");
             const overlay = document.createElement("div");
             
@@ -154,7 +159,10 @@ const TileSet = function(image, dimensions) {
             overlay.style.height = entry.style.height;
             entry.appendChild(overlay);
 
-            element.appendChild(entry);
+            wrapper.className = "legend-entry-wrapper";
+            wrapper.appendChild(entry);
+
+            element.appendChild(wrapper);
 
             entry.onclick = () => {
                 selected.classList.remove("selected");
