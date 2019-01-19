@@ -1,18 +1,23 @@
-const GraphNode = function(options, chosen) {
+const GraphNode = function(options, chosen, seed) {
     this.options = options;
     this.chosen = chosen;
+    this.seed = seed;
 };
 
-GraphNode.prototype.toElement = function() {
+GraphNode.prototype.toElement = function(onGenerate) {
     const element = document.createElement("div");
 
     element.className = "options";
 
     for (const option of this.options) {
         const word = document.createElement("div");
+        const seed = this.seed.slice(0, -1);
+
+        seed.push(option);
 
         word.className = "word";
         word.appendChild(document.createTextNode(option));
+        word.onclick = () => onGenerate(seed);
 
         if (this.chosen === option)
             word.classList.add("chosen");
@@ -23,8 +28,9 @@ GraphNode.prototype.toElement = function() {
     return element;
 };
 
-const Graph = function(element) {
+const Graph = function(element, onGenerate) {
     let nodes = [];
+    let seed = [];
 
     const makeElement = () => {
         while (element.firstChild)
@@ -37,7 +43,7 @@ const Graph = function(element) {
         element.appendChild(svg);
 
         for (const node of nodes) {
-            const options = node.toElement();
+            const options = node.toElement(onGenerate);
 
             elements.push(options);
             element.appendChild(options);
@@ -90,10 +96,13 @@ const Graph = function(element) {
 
     this.clear = () => {
         nodes = [];
+        seed = [];
     };
 
     this.add = (options, chosen) => {
         const lastNode = nodes.length?nodes[nodes.length - 1]:null;
+
+        seed.push(chosen);
         
         if (lastNode && lastNode.options.length === 1 && options.length === 1) {
             lastNode.options[0] += " " + options[0];
@@ -107,7 +116,7 @@ const Graph = function(element) {
         for (const option of options) if (!uniqueOptions.includes(option) && option !== null)
             uniqueOptions.push(option);
 
-        nodes.push(new GraphNode(uniqueOptions, chosen));
+        nodes.push(new GraphNode(uniqueOptions, chosen, seed.slice()));
     };
 
     this.finish = () => {

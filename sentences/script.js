@@ -1,4 +1,3 @@
-const graph = new Graph(document.getElementById("graph"));
 let text = null;
 
 const loadText = (file, onFinished) => {
@@ -13,14 +12,15 @@ const loadText = (file, onFinished) => {
     request.send();
 };
 
-const generate = () => {
+const generate = seed => {
     let result = "";
 
-    while (result.length < 30)
-        result = text.generate();
+    result = text.generate(seed);
 
     document.getElementById("text").innerText = result;
 };
+
+const graph = new Graph(document.getElementById("graph"), generate);
 
 const load = () => {
     text = loadText(document.getElementById("source-picker").value, data => {
@@ -31,6 +31,6 @@ const load = () => {
 };
 
 document.getElementById("sources").onchange = load;
-document.getElementById("button-generate").onclick = generate;
+document.getElementById("button-generate").onclick = () => generate();
 
 load();

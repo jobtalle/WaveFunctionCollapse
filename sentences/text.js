@@ -96,14 +96,20 @@ const Text = function(data, lookback, graph) {
 
     build();
     
-    this.generate = first => {
-        let word = first?first:starts[Math.floor(Math.random() * starts.length)];
-        let previousWords = [];
-        let sentence = word;
+    this.generate = seed => {
+        let word = seed?seed[seed.length - 1]:starts[Math.floor(Math.random() * starts.length)];
+        let previousWords = seed?seed.slice(-3, -1):[];
+        let sentence = seed?makeWordList(seed):word;
 
         if (graph) {
             graph.clear();
-            graph.add([word], word);
+
+            if (seed) {
+                for (let i = 0; i < seed.length; ++i)
+                    graph.add(i?words[makeWordList(seed.slice(Math.max(0, i - lookback), i))]:[seed[i]], seed[i]);
+            }
+            else
+                graph.add([word], word);
         }
 
         const addPrevious = word => {
