@@ -13,7 +13,7 @@ GraphNode.prototype.toElement = function(onGenerate) {
         const word = document.createElement("div");
         const seed = this.seed.slice(0, -1);
 
-        seed.push(option);
+        seed.push(option.split(" ").pop());
 
         word.className = "word";
         word.appendChild(document.createTextNode(option));
@@ -107,6 +107,7 @@ const Graph = function(element, onGenerate) {
         if (lastNode && lastNode.options.length === 1 && options.length === 1) {
             lastNode.options[0] += " " + options[0];
             lastNode.chosen = lastNode.options[0];
+            lastNode.seed.push(chosen);
 
             return;
         }
