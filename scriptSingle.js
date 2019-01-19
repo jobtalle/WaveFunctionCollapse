@@ -1,17 +1,5 @@
 let text = null;
 
-const loadText = (file, onFinished) => {
-    const request = new XMLHttpRequest();
-
-    request.open("GET", file);
-    request.onreadystatechange = () => {
-        if (request.readyState === 4)
-            onFinished(request.responseText);
-    };
-
-    request.send();
-};
-
 const generate = seed => {
     let result = "";
 

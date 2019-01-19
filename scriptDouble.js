@@ -1,36 +1,29 @@
-let text = null;
+const chat = new Chat(document.getElementById("chat"));
+let left = null;
+let right = null;
 
-const loadText = (file, onFinished) => {
-    const request = new XMLHttpRequest();
+const openFile = event => {
+    loadTextLocal(event.target.files[0], data => {
+        const parser = new WhatsAppParser(data);
 
-    request.open("GET", file);
-    request.onreadystatechange = () => {
-        if (request.readyState === 4)
-            onFinished(request.responseText);
-    };
-
-    request.send();
-};
-
-const generate = seed => {
-    let result = "";
-
-    result = text.generate(seed);
-
-    document.getElementById("text").innerText = result;
-};
-
-const graph = new Graph(document.getElementById("graph"), generate);
-
-const load = () => {
-    text = loadText(document.getElementById("source-picker").value, data => {
-        text = new Text(data, 2, graph);
-
-        generate();
+        left = parser.getLeft();
+        right = parser.getRight();
     });
 };
 
-document.getElementById("sources").onchange = load;
-document.getElementById("button-generate").onclick = () => generate();
+const sendMessage = (event, left) => {
+    if (event.keyCode !== 13)
+        return;
 
-load();
+    const message = event.srcElement.value;
+
+    if (message.length === 0)
+        return;
+
+    event.srcElement.value = "";
+
+    if (left)
+        chat.sendLeft(message);
+    else
+        chat.sendRight(message);
+};

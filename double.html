@@ -9,19 +9,17 @@
         <div id="wrapper">
             <h1>Quantum chat</h1>
             <div id="graph"></div>
-            <div id="result">
-                <textarea id="text" readonly></textarea>
-            </div>
-            <div id="sources">
-                <select id="source-picker">
-                    <option value="obama.txt">Obama's speech on the state of democracy</option>
-                    <option value="me.txt">My blog post on convolutional textures</option>
-                </select>
-            </div>
+            <div id="chat"></div>
             <div id="controls">
-                <button id="button-generate">Generate</button>
+                <button id="button-chat">Start chatting</button>
+                <button id="button-speak-left">Speak left</button>
+                <button id="button-speak-right">Speak right</button>
+                <input type="file" accept="text/plaint" onchange="openFile(event)">
             </div>
         </div>
+        <script src="loadText.js"></script>
+        <script src="whatsAppParser.js"></script>
+        <script src="chat.js"></script>
         <script src="graph.js"></script>
         <script src="text.js"></script>
         <script src="scriptDouble.js"></script>
