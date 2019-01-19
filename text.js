@@ -5,9 +5,8 @@ const Text = function(data, lookback, graph) {
     const makeWordList = list => {
         let result = list[0];
 
-        for (let i = 1; i < list.length; ++i) {
+        for (let i = 1; i < list.length; ++i) if (list[i].length)
             result += " " + list[i];
-        }
 
         return result;
     };
@@ -38,8 +37,12 @@ const Text = function(data, lookback, graph) {
         if (isLast)
             words[entry].push(null);
         
-        if (!isFirst)
-            words[makeWordList(previousWords)].push(word);
+        if (!isFirst) {
+            const wordList = makeWordList(previousWords);
+            
+            if (words[wordList])
+                words[wordList].push(word);
+        }
     };
 
     const build = () => {
