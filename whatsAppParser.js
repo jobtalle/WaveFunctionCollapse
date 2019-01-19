@@ -1,5 +1,5 @@
 const WhatsAppParser = function(data, graph) {
-    const CHARACTER_THRESHOLD = 3;
+    const CHARACTER_THRESHOLD = 16;
 
     let left = null;
     let right = null;

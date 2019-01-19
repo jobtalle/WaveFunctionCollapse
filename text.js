@@ -5,7 +5,7 @@ const Text = function(data, lookback, graph) {
     const makeWordList = list => {
         let result = list[0];
 
-        for (let i = 1; i < list.length; ++i) if (list[i].length)
+        for (let i = 1; i < list.length; ++i) if (list[i] && list[i].length)
             result += " " + list[i];
 
         return result;

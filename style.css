@@ -73,6 +73,7 @@
     padding: 8px;
     clear: both;
     border-radius: 8px;
+    max-width: 50%;
 }
 
 #chat .message.left {
