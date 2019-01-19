@@ -1,4 +1,6 @@
 const Chat = function(element) {
+    const MAX_MESSAGES = 500;
+
     const makeElement = message => {
         const element = document.createElement("div");
 
@@ -12,6 +14,13 @@ const Chat = function(element) {
         element.scrollTop = element.scrollHeight;
     };
 
+    const trim = () => {
+        messages = element.getElementsByClassName("message");
+
+        if (messages.length > MAX_MESSAGES)
+            element.removeChild(messages[0]);
+    };
+
     this.sendLeft = message => {
         const messageElement = makeElement(message);
 
@@ -19,6 +28,7 @@ const Chat = function(element) {
 
         element.appendChild(messageElement);
 
+        trim();
         scrollDown();
     };
 
@@ -29,6 +39,7 @@ const Chat = function(element) {
 
         element.appendChild(messageElement);
 
+        trim();
         scrollDown();
     };
 }

@@ -1,5 +1,6 @@
 const Text = function(data, lookback, graph) {
     const words = {};
+    const endings = {};
     const starts = [];
 
     const makeWordList = list => {
