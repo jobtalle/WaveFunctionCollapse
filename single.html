@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="style.css"/>
+        <title>Wave function collapse</title>
+    </head>
+    <body>
+        <div id="wrapper">
+            <h1>Quantum text generator</h1>
+            <div id="graph"></div>
+            <div id="result">
+                <textarea id="text" readonly></textarea>
+            </div>
+            <div id="sources">
+                <select id="source-picker">
+                    <option value="obama.txt">Obama's speech on the state of democracy</option>
+                    <option value="me.txt">My blog post on convolutional textures</option>
+                </select>
+            </div>
+            <div id="controls">
+                <button id="button-generate">Generate</button>
+            </div>
+        </div>
+        <script src="graph.js"></script>
+        <script src="text.js"></script>
+        <script src="scriptSingle.js"></script>
+    </body>
+</html>
