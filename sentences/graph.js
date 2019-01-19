@@ -51,6 +51,8 @@ const Graph = function(element) {
         svg.setAttribute("width", elements[elements.length - 1].offsetLeft + elements[elements.length - 1].clientWidth);
         svg.setAttribute("height", height);
 
+        const BEZIER_OFFSET = 24;
+        const BEZIER_OVERLAP = 2;
         let previousElement = null;
 
         for (const element of elements) {
@@ -60,15 +62,25 @@ const Graph = function(element) {
                 continue;
             }
 
-            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "path");
             const from = previousElement.getElementsByClassName("chosen")[0];
             const to = element.getElementsByClassName("chosen")[0];
 
-            line.setAttribute("x1", from.offsetLeft + from.clientWidth);
-            line.setAttribute("y1", from.offsetTop + from.clientHeight / 2);
-            line.setAttribute("x2", to.offsetLeft);
-            line.setAttribute("y2", to.offsetTop + to.clientHeight / 2);
-            line.setAttribute("stroke", "gray")
+            line.setAttribute("d", "M " +
+                (from.offsetLeft + from.clientWidth - BEZIER_OVERLAP) + " " +
+                (from.offsetTop + from.clientHeight / 2) + " " +
+                "C " +
+                (from.offsetLeft + from.clientWidth + BEZIER_OFFSET) + " " +
+                (from.offsetTop + from.clientHeight / 2) + " " +
+                (to.offsetLeft - BEZIER_OFFSET) + " " +
+                (to.offsetTop + to.clientHeight / 2) + " " +
+                (to.offsetLeft + BEZIER_OVERLAP) + " " +
+                (to.offsetTop + to.clientHeight / 2));
+
+
+            line.setAttribute("stroke", "gray");
+            line.setAttribute("stroke-width", 2);
+            line.setAttribute("fill", "none");
 
             svg.appendChild(line);
 
@@ -92,7 +104,7 @@ const Graph = function(element) {
 
         const uniqueOptions = [];
 
-        for (const option of options) if (!uniqueOptions.includes(option))
+        for (const option of options) if (!uniqueOptions.includes(option) && option !== null)
             uniqueOptions.push(option);
 
         nodes.push(new GraphNode(uniqueOptions, chosen));

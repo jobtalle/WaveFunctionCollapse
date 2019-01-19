@@ -16,6 +16,7 @@
     overflow: scroll;
     white-space: nowrap;
     position: relative;
+    user-select: none;
 }
 
 #graph svg {
@@ -46,8 +47,11 @@
 }
 
 #graph .options .word.chosen {
-    cursor: auto;
     background-color: #FACDCA;
+}
+
+#graph .options .word.chosen:hover {
+    background-color: #EAEAEA;
 }
 
 #text {
