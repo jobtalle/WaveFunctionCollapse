@@ -12,9 +12,15 @@ const loadText = (file, onFinished) => {
 
 let text = null;
 
-loadText("text.txt", data => text = new Text(data));
+loadText("obama.txt", data => text = new Text(data, 3));
 
 document.getElementById("button-generate").onclick = () => {
-    if (text)
-        document.getElementById("text").innerText = text.generate();
+    if (text) {
+        let result = "";
+
+        while (result.length < 30)
+            result = text.generate();
+
+        document.getElementById("text").innerText = result;
+    }
 };

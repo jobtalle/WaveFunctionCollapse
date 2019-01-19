@@ -1,17 +1,36 @@
-const CHAR_CODE_FIRST = "A".charCodeAt(0);
-const CHAR_CODE_LAST = "Z".charCodeAt(0);
-
-const Text = function(data) {
+const Text = function(data, lookback) {
     const words = {};
     const starts = [];
     const ends = [];
 
-    const addWord = (previousWord, word, isFirst, isLast) => {
+    const makeWordList = list => {
+        let result = list[0];
+
+        for (let i = 1; i < list.length; ++i) {
+            result += " " + list[i];
+        }
+
+        return result;
+    };
+
+    const makeWordListPlus = (list, word) => {
+        let result = "";
+
+        // TODO: Verify this ternary statement
+        if (list) for (let i = list.length === lookback?1:0; i < list.length; ++i)
+            result += list[i] + " ";
+        
+        return result + word;
+    };
+
+    const addWord = (previousWords, word, isFirst, isLast) => {
         if (word.length === 0)
             return;
 
-        if (!words[word]) {
-            words[word] = [];
+        const entry = makeWordListPlus(previousWords, word);
+        
+        if (!words[entry]) {
+            words[entry] = [];
 
             if (isFirst)
                 starts.push(word);
@@ -20,35 +39,45 @@ const Text = function(data) {
                 ends.push(word);
         }
         
-        if (previousWord && !isFirst)
-            words[previousWord].push(word);
+        if (previousWords && previousWords.length && !isFirst)
+            words[makeWordList(previousWords)].push(word);
     };
 
     const build = () => {
-        let previousWord = null;
+        let previousWords = [];
         let word = "";
         let isFirst = true;
+
+        const addPrevious = word => {
+            previousWords.push(word);
+            
+            if (previousWords.length > lookback)
+                previousWords.shift();
+        };
 
         for (let i = 0; i < data.length; ++i) {
             switch (data[i]) {
                 case " ":
-                    addWord(isFirst?null:previousWord, word, isFirst, false);
+                    addWord(isFirst?null:previousWords, word, isFirst, false);
 
-                    previousWord = word;
+                    addPrevious(word);
+
                     isFirst = false;
 
                     word = "";
 
                     break;
                 case ".":
+                case "?":
+                case "!":
                     if (i + 1 < data.length && data[i + 1] !== " ")
                         word += data[i].toLowerCase();
                     else {
-                        addWord(previousWord, word, isFirst, true);
+                        addWord(previousWords, word, isFirst, true);
 
                         isFirst = true;
 
-                        previousWord = word;
+                        previousWords = [];
                         word = "";
                         ++i;
                     }
@@ -56,6 +85,7 @@ const Text = function(data) {
                     break;
                 case "(":
                 case ")":
+                case '"':
                     break;
                 default:
                     word += data[i].toLowerCase();
@@ -66,13 +96,25 @@ const Text = function(data) {
     };
 
     build();
+
+    console.log(words);
     
     this.generate = first => {
         let word = first?first:starts[Math.floor(Math.random() * starts.length)];
+        let previousWords = [];
         let sentence = word;
 
+        const addPrevious = word => {
+            previousWords.push(word);
+            
+            if (previousWords.length > lookback)
+                previousWords.shift();
+        };
+
         while (ends.indexOf(word) === -1) {
-            const options = words[word];
+            addPrevious(word);
+            
+            const options = words[makeWordList(previousWords)];
 
             word = options[Math.floor(Math.random() * options.length)];
 
