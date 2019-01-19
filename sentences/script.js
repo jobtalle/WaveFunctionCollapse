@@ -12,7 +12,7 @@ const loadText = (file, onFinished) => {
 
 let text = null;
 
-loadText("obama.txt", data => text = new Text(data, 3));
+loadText("obama.txt", data => text = new Text(data, 2));
 
 document.getElementById("button-generate").onclick = () => {
     if (text) {

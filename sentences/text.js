@@ -1,7 +1,6 @@
 const Text = function(data, lookback) {
     const words = {};
     const starts = [];
-    const ends = [];
 
     const makeWordList = list => {
         let result = list[0];
@@ -34,12 +33,12 @@ const Text = function(data, lookback) {
 
             if (isFirst)
                 starts.push(word);
-
-            if (isLast)
-                ends.push(word);
         }
+
+        if (isLast)
+            words[entry].push(null);
         
-        if (previousWords && previousWords.length && !isFirst)
+        if (!isFirst)
             words[makeWordList(previousWords)].push(word);
     };
 
@@ -111,12 +110,15 @@ const Text = function(data, lookback) {
                 previousWords.shift();
         };
 
-        while (ends.indexOf(word) === -1) {
+        while (true) {
             addPrevious(word);
             
             const options = words[makeWordList(previousWords)];
 
             word = options[Math.floor(Math.random() * options.length)];
+
+            if (word === null)
+                break;
 
             sentence += " " + word;
         }
