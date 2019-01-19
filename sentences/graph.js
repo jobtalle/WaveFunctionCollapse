@@ -4,7 +4,7 @@ const GraphNode = function(options, chosen, seed) {
     this.seed = seed;
 };
 
-GraphNode.prototype.toElement = function(onGenerate) {
+GraphNode.prototype.toElement = function(onGenerate, container) {
     const element = document.createElement("div");
 
     element.className = "options";
@@ -17,7 +17,15 @@ GraphNode.prototype.toElement = function(onGenerate) {
 
         word.className = "word";
         word.appendChild(document.createTextNode(option));
-        word.onclick = () => onGenerate(seed);
+        word.onclick = () => {
+            const scrollLeft = container.scrollLeft;
+            const scrollTop = container.scrollTop;
+
+            onGenerate(seed);
+
+            container.scrollLeft = scrollLeft;
+            container.scrollTop = scrollTop;
+        };
 
         if (this.chosen === option)
             word.classList.add("chosen");
@@ -43,7 +51,7 @@ const Graph = function(element, onGenerate) {
         element.appendChild(svg);
 
         for (const node of nodes) {
-            const options = node.toElement(onGenerate);
+            const options = node.toElement(onGenerate, element);
 
             elements.push(options);
             element.appendChild(options);
