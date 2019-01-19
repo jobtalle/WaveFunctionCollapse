@@ -1,4 +1,4 @@
-const Text = function(data, lookback) {
+const Text = function(data, lookback, graph) {
     const words = {};
     const starts = [];
 
@@ -95,13 +95,16 @@ const Text = function(data, lookback) {
     };
 
     build();
-
-    console.log(words);
     
     this.generate = first => {
         let word = first?first:starts[Math.floor(Math.random() * starts.length)];
         let previousWords = [];
         let sentence = word;
+
+        if (graph) {
+            graph.clear();
+            graph.add([word], word);
+        }
 
         const addPrevious = word => {
             previousWords.push(word);
@@ -115,13 +118,22 @@ const Text = function(data, lookback) {
             
             const options = words[makeWordList(previousWords)];
 
+            if (!options)
+                break;
+
             word = options[Math.floor(Math.random() * options.length)];
+
+            if (graph && word)
+                graph.add(options, word);
 
             if (word === null)
                 break;
 
             sentence += " " + word;
         }
+
+        if (graph)
+            graph.finish();
 
         return sentence[0].toUpperCase() + sentence.substr(1) + ".";
     };

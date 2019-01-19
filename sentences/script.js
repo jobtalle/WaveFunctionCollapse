@@ -1,3 +1,6 @@
+const graph = new Graph(document.getElementById("graph"));
+let text = null;
+
 const loadText = (file, onFinished) => {
     const request = new XMLHttpRequest();
 
@@ -10,17 +13,24 @@ const loadText = (file, onFinished) => {
     request.send();
 };
 
-let text = null;
+const generate = () => {
+    let result = "";
 
-loadText("obama.txt", data => text = new Text(data, 2));
+    while (result.length < 30)
+        result = text.generate();
 
-document.getElementById("button-generate").onclick = () => {
-    if (text) {
-        let result = "";
-
-        while (result.length < 30)
-            result = text.generate();
-
-        document.getElementById("text").innerText = result;
-    }
+    document.getElementById("text").innerText = result;
 };
+
+const load = () => {
+    text = loadText(document.getElementById("source-picker").value, data => {
+        text = new Text(data, 2, graph);
+
+        generate();
+    });
+};
+
+document.getElementById("sources").onchange = load;
+document.getElementById("button-generate").onclick = generate;
+
+load();
