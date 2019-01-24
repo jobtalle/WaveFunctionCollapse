@@ -1,6 +1,5 @@
 const Text = function(data, lookback, graph) {
     const words = {};
-    const endings = {};
     const starts = [];
 
     const makeWordList = list => {
@@ -61,6 +60,7 @@ const Text = function(data, lookback, graph) {
         for (let i = 0; i < data.length; ++i) {
             switch (data[i]) {
                 case " ":
+                case "\n":
                     addWord(isFirst?null:previousWords, word, isFirst, false);
 
                     addPrevious(word);
@@ -99,7 +99,7 @@ const Text = function(data, lookback, graph) {
     };
 
     build();
-    
+
     this.generate = seed => {
         let word = seed?seed[seed.length - 1]:starts[Math.floor(Math.random() * starts.length)];
         let previousWords = seed?seed.slice(-3, -1):[];

@@ -1,5 +1,6 @@
 const WhatsAppParser = function(data, graph) {
-    const CHARACTER_THRESHOLD = 16;
+    const CHARACTER_THRESHOLD = 3;
+    const LOOKBACK = 2;
 
     let left = null;
     let right = null;
@@ -64,8 +65,8 @@ const WhatsAppParser = function(data, graph) {
         nameLeft = names[0];
         nameRight = names[1];
 
-        left = new Text(textLeft, 2, graph);
-        right = new Text(textRight, 2, graph);
+        left = new Text(textLeft, LOOKBACK, graph);
+        right = new Text(textRight, LOOKBACK, graph);
     };
 
     this.getLeft = () => left;

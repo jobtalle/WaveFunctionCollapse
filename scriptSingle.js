@@ -1,5 +1,13 @@
 let text = null;
 
+const openFile = event => {
+    loadTextLocal(event.target.files[0], data => {
+        text = new Text(data, 2, graph);
+
+        generate();
+    });
+};
+
 const generate = seed => {
     let result = "";
 
